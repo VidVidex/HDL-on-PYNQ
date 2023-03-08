@@ -1,4 +1,4 @@
-# HDL-on-PYNQ
+# HDL on PYNQ
 A guide on how to package HDL code (VHDL or Verilog) for PYNQ environments.
 
 The [official documentation](https://pynq.readthedocs.io/en/latest/overlay_design_methodology/overlay_tutorial.html) for creating PYNQ overlays is rather limited.
