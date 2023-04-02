@@ -1,11 +1,12 @@
 # HDL on PYNQ
+
 A guide on how to package HDL code (VHDL or Verilog) for PYNQ environments.
 
 The [official documentation](https://pynq.readthedocs.io/en/latest/overlay_design_methodology/overlay_tutorial.html) for creating PYNQ overlays is rather limited.
 It only shows how to use HLS code and even then it skips many important steps.
 The purpose of this guide is to better show how to get your VHDL or Verilog project running on your PYNQ board.
 
-I have a PYNQ-ZU board but the process should be similar on other boards as well.
+I have a PYNQ-ZU board, but the process should be similar on other boards as well.
 
 ## Overview
 
@@ -17,9 +18,9 @@ For the purposes of this guide I'll be making a module that adds two 32-bit numb
 and returns the result `c`.
 
 | Signal/Register | Direction | Size   | Offset | Signal in HDL |
-|-----------------|-----------|--------| -------| --------------| 
+|-----------------|-----------|--------| -------| --------------|
 | `a`             | input     | 32 bit | `0x00` | `slv_reg0`    |
-| `b`             | input     | 32 bit | `0x04` | `slv_reg1`    | 
+| `b`             | input     | 32 bit | `0x04` | `slv_reg1`    |
 | `c`             | output    | 32 bit | `0x08` | `slv_reg2`    |
 
 PYNQ needs to know the register offset to interface with the overlay.
@@ -36,7 +37,7 @@ You can name it anything you want, for example `adder`, and save it somewhere co
 ![](img/new_project_1.png)
 
 On the next window select `RTL Project` and optionally also check `Do not specify sources at this time`.
-You do not have to check it but it will save you clicking `Next` on two windows.
+You do not have to check it, but it will save you clicking `Next` on two windows.
 
 ![](img/new_project_2.png)
 
@@ -94,7 +95,7 @@ There are as many registers as you chose when creating the IP (in my case 4).
 
 Notice that I used registers `slv_reg0` and `slv_reg1` as inputs for my logic but for output I am using a signal called `sum`.
 **This is important**.
-While theoretically you could output directly to an internal register (such as `slv_reg2`) that does not work because it will not be updated correctly and you won't get the correct result.
+While theoretically you could output directly to an internal register (such as `slv_reg2`) that does not work because it will not be updated correctly, and you won't get the correct result.
 I am sure there is a way to make it work even without extra signals I think this is an easier workaround.
 
 ![](img/new_ip_5.png)
@@ -111,11 +112,12 @@ Normally the CPU writes to them but in this case we want to expose our signals t
 In my case I want the value of signal `sum` to be available to the outside world.
 
 To do this, find the process (it should be around line 215) and do the following:
-- connect your signals to the internal registers.
+
+- Connect your signals to the internal registers.
 In my case that means connecting `sum` to `slv_reg2`.
 Do this outside the switch statement to make sure the register is always refreshed.
-- comment out or delete all switch cases for your output registers.
-In my case my output register is `slv_reg2` so I'll comment out the code from `when b"10" =>` to the `end loop;`
+- Comment out or delete all switch cases for your output registers.
+In my case my output register is `slv_reg2`, so I'll comment out the code from `when b"10" =>` to the `end loop;`
 - comment out or delete the statements for your output registers in the `when others` block
 
 At the end your process should look similar to this.
@@ -141,15 +143,15 @@ This is where the `Offset` and `Size` columns of the table above come in handy.
 
 ![](img/new_ip_10.png)
 
-Finally everything is ready to be packaged.
+Finally, everything is ready to be packaged.
 Go to the `Review and Package` tab and click `Re-Package IP`.
-After the IP is packaged you can close this project and return to the previous one. 
+After the IP is packaged you can close this project and return to the previous one.
 
 ## Add IP to your project
 
 The next step is to create a new block design where we'll combine the newly created IP with a ZYNQ processor.
 
-First click the `Create Block Design` button the the left.
+First click the `Create Block Design` button the left.
 You can name the design anything you want.
 
 ![](img/integrate_1.png)
@@ -186,7 +188,7 @@ This will create a `.tcl` file which PYNQ needs to recognize your bitstream as a
 ## Use your overlay on your PYNQ board
 
 To upload the generated bitstream and other required files we'll use SMB.
-This works particularly well on Windows but I am sure there are equally simple methods on Linux as well.
+This works particularly well on Windows, but I am sure there are equally simple methods on Linux as well.
 
 To connect to your board simply type `\\pynq` into the path input of File Explorer.
 When you first connect it'll ask for a username and a password.
@@ -195,16 +197,18 @@ Both are `xilinx`.
 ![](img/use_1.png)
 
 I like to create a new folder for each overlay.
-These folders can be located almost anywhere but I prefer to keep them in `\\pynq\xilinx\pynq\overlays`.
+These folders can be located almost anywhere, but I prefer to keep them in `\\pynq\xilinx\pynq\overlays`.
 
 In this case I'll keep files for my `adder` module in the folder `\\pynq\xilinx\pynq\overlays\adder`
 
 To create a new layout you need to copy the following files to your board:
+
 - a `.bit` file (the bitstream that will be loaded onto the FPGA)
 - a `.tcl` file (this is the file you created by exporting the Block Diagram. PYNQ needs this to recognize your bitstream as an overlay)
 - a `.hwh` file (this is optional but is needed if you want PYNQ to recognize register names)
 
-By default the files are in these folders relative to your project root (the name might be different depending on what how you named your block design but in all cases there is only one file with that extension in each folder):
+By default, the files are in these folders relative to your project root (the name might be different depending on what how you named your block design but in all cases there is only one file with that extension in each folder):
+
 - `adder_design.tcl`
 - `adder.runs\impl_1\adder_design_wrapper.bit`
 - `adder.gen\sources_1\bd\adder_design\hw_handoff\adder_design.hwh`
@@ -224,8 +228,9 @@ For example:
 ## References
 
 This guide is based on the following articles and guides:
-- https://pynq.readthedocs.io/en/latest/overlay_design_methodology/overlay_tutorial.html
-- https://pynq.readthedocs.io/en/latest/overlay_design_methodology/overlay_design.html#overlay-hwh-file
-- https://www.fpgadeveloper.com/2014/08/creating-a-custom-ip-block-in-vivado.html/
-- https://discuss.pynq.io/t/tutorial-creating-a-new-verilog-module-overlay/1530
-- https://www.fpgadeveloper.com/2018/03/create-a-custom-pynq-overlay-for-pynq-z1.html/
+
+- <https://pynq.readthedocs.io/en/latest/overlay_design_methodology/overlay_tutorial.html>
+- <https://pynq.readthedocs.io/en/latest/overlay_design_methodology/overlay_design.html#overlay-hwh-file>
+- <https://www.fpgadeveloper.com/2014/08/creating-a-custom-ip-block-in-vivado.html/>
+- <https://discuss.pynq.io/t/tutorial-creating-a-new-verilog-module-overlay/1530>
+- <https://www.fpgadeveloper.com/2018/03/create-a-custom-pynq-overlay-for-pynq-z1.html/>
