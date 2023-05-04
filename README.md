@@ -180,7 +180,7 @@ Next click the `Generate Bitstream` button and wait for it to be generated.
 
 After the bitstream is generated export the block diagram.
 To do this go to `File` > `Export` > `Export Block Design`.
-You can leave the default name and location as we'll change is later anyway.
+You can leave the default name and location as we'll change them later anyway.
 This will create a `.tcl` file which PYNQ needs to recognize your bitstream as an overlay.
 
 ![](img/integrate_5.png)
