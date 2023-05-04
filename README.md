@@ -161,7 +161,7 @@ In my case my IP is called `adder` and the ZYNQ processor is called `Zynq UltraS
 
 ![](img/integrate_2.png)
 
-After your add both IPs you'see a green "Designer Assistance available` notification at the top of the Diagram window.
+After your add both IPs you'll see a green `Designer Assistance available` notification at the top of the Diagram window.
 Click `Run Block Automation` and `Run Connection Automation` buttons to connect both IPs.
 You might need to click easy button multiple times to get everything connected.
 
